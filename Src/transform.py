@@ -19,6 +19,8 @@ def transform_doctors(df):
     cols = list(df.columns)
     df = df[[cols[0]] + [cols[-1]] + cols[1:-1]]
 
+    df.to_csv("../data/processed/treated_doctors.csv", index=False)
+
     return df
     
 
@@ -48,6 +50,8 @@ def transform_patients(df):
 
     df = df[cols]
 
+    df.to_csv("../data/processed/treated_patients.csv", index=False)
+
     return df
 
 
@@ -63,6 +67,8 @@ def transform_treatments(df):
     df = df.rename(columns={"treatment_id": "IDtreatment"})
     df["IDtreatment"] = range(1, len(df) + 1) 
     df["appointment_id"] = range(1, len(df) + 1) 
+
+    df.to_csv("../data/processed/treated_treatments.csv", index=False)
 
     return df
 
@@ -89,6 +95,8 @@ def transform_appointments(df):
     df["doctor_id"] = pd.to_numeric(df["doctor_id"], errors="coerce").astype(int)
     df = df.rename(columns={"doctor_id": "IDdoctor"})
 
+    df.to_csv("../data/processed/treated_appointments.csv", index=False)
+
     return df
 
 
@@ -111,5 +119,7 @@ def transform_billing(df):
     df["treatment_id"] = df["treatment_id"].str[1:]
     df["treatment_id"] = pd.to_numeric(df["treatment_id"], errors="coerce").astype(int)
     df = df.rename(columns={"treatment_id": "IDtreatment"})
+
+    df.to_csv("../data/processed/treated_billings.csv", index=False)
 
     return df
