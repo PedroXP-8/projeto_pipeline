@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("Src/hospital.db")
+conn = sqlite3.connect("hospital.db")
 
 def load_data(df1, df2, df3, df4, df5):
     df1.to_sql("doctors", conn, if_exists="append", index=False)
