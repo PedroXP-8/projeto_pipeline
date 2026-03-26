@@ -1,5 +1,7 @@
-from extract import extract_data
+from Pipeline.extract import extract_data
 import pandas as pd
+import numpy as np
+from datetime import datetime
 
 def transform_doctors(df):
 
@@ -19,7 +21,16 @@ def transform_doctors(df):
     cols = list(df.columns)
     df = df[[cols[0]] + [cols[-1]] + cols[1:-1]]
 
-    df.to_csv("../data/processed/treated_doctors.csv", index=False)
+    df["salary"] = np.random.normal(loc=15000, scale=3000, size=10)
+    df["salary"] = np.round(df["salary"], 2)
+
+    df["increase"] = np.where((df["years_experience"] > 20),
+                   df["salary"] * 0.4,
+                   np.where((df["years_experience"] > 10),
+                   df["salary"] * 0.1,
+                   df["salary"] * 0))
+
+    df.to_csv("data/processed/treated_doctors.csv", index=False)
 
     return df
     
@@ -50,7 +61,11 @@ def transform_patients(df):
 
     df = df[cols]
 
-    df.to_csv("../data/processed/treated_patients.csv", index=False)
+    now = datetime.today()
+    df["age"] = df["date_of_birth"].apply(
+    lambda x: now.year - x.year - ((now.month, now.day) < (x.month, x.day)))
+
+    df.to_csv("data/processed/treated_patients.csv", index=False)
 
     return df
 
@@ -68,7 +83,7 @@ def transform_treatments(df):
     df["IDtreatment"] = range(1, len(df) + 1) 
     df["appointment_id"] = range(1, len(df) + 1) 
 
-    df.to_csv("../data/processed/treated_treatments.csv", index=False)
+    df.to_csv("data/processed/treated_treatments.csv", index=False)
 
     return df
 
@@ -95,7 +110,7 @@ def transform_appointments(df):
     df["doctor_id"] = pd.to_numeric(df["doctor_id"], errors="coerce").astype(int)
     df = df.rename(columns={"doctor_id": "IDdoctor"})
 
-    df.to_csv("../data/processed/treated_appointments.csv", index=False)
+    df.to_csv("data/processed/treated_appointments.csv", index=False)
 
     return df
 
@@ -120,6 +135,6 @@ def transform_billing(df):
     df["treatment_id"] = pd.to_numeric(df["treatment_id"], errors="coerce").astype(int)
     df = df.rename(columns={"treatment_id": "IDtreatment"})
 
-    df.to_csv("../data/processed/treated_billings.csv", index=False)
+    df.to_csv("data/processed/treated_billings.csv", index=False)
 
     return df
